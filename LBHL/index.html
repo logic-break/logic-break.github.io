@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+	<head>
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="MobileOptimized" content="640"/>
+		<meta name="HandheldFriendly" content="true"/>
+		<title>LBHL - Logic-Break Half Life</title>
+		<script>
+		document.addEventListener('contextmenu', event => event.preventDefault());
+		</script>
+		<style>
+		:root {
+			--primary: #f0b418;
+			--primary-dark: #ffa600;
+			--bg: #1a1a1a;
+			--bg-light: #2d2d2d;
+			--bg-lighter: #3d3d3d;
+			--text: #f0f0f0;
+			--text-muted: #aaa;
+			--border: #444;
+			--border-light: #555;
+			--shadow: rgba(0, 0, 0, 0.3);
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			outline: none;
+			cursor: default;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+			background-color: var(--bg);
+			color: var(--text);
+			line-height: 1.6;
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+		}
+
+		.container {
+			max-width: 600px;
+			width: 100%;
+			background: var(--bg-light);
+			border-radius: 12px;
+			padding: 40px;
+			box-shadow: 0 10px 30px var(--shadow);
+			border: 1px solid var(--border);
+		}
+
+		.header {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		.title {
+			font-size: 2.8rem;
+			color: var(--primary);
+			margin-bottom: 10px;
+			letter-spacing: 1px;
+			font-weight: 700;
+			text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+		}
+
+		.subtitle {
+			font-size: 1.4rem;
+			color: var(--text-muted);
+			margin-bottom: 10px;
+			font-weight: 300;
+		}
+
+		.engine {
+			color: var(--primary);
+			font-size: 1.1rem;
+			margin-bottom: 25px;
+			opacity: 0.8;
+		}
+
+		.link {
+			color: var(--primary);
+			text-decoration: none;
+			transition: all 0.2s ease;
+			display: inline-block;
+			padding: 5px 0;
+			border-bottom: 2px solid transparent;
+		}
+
+		.link:hover {
+			color: var(--primary-dark);
+			border-bottom-color: var(--primary);
+		}
+
+		.divider {
+			height: 1px;
+			background: linear-gradient(90deg, transparent, var(--border), transparent);
+			margin: 30px 0;
+		}
+
+		.settings-panel {
+			background: var(--bg-lighter);
+			border-radius: 8px;
+			padding: 25px;
+			border: 1px solid var(--border);
+		}
+
+		.settings-title {
+			font-size: 1.4rem;
+			color: var(--primary);
+			margin-bottom: 20px;
+			font-weight: 600;
+		}
+
+		.form-group {
+			margin-bottom: 25px;
+		}
+
+		.form-label {
+			display: block;
+			margin-bottom: 10px;
+			color: var(--text);
+			font-weight: 500;
+			font-size: 1.1rem;
+		}
+
+		input[type="number"] {
+			width: 100%;
+			padding: 14px;
+			background: var(--bg);
+			border: 2px solid var(--border);
+			border-radius: 8px;
+			color: var(--text);
+			font-size: 1.1rem;
+			transition: all 0.2s ease;
+		}
+
+		input[type="number"]:focus {
+			border-color: var(--primary);
+			box-shadow: 0 0 0 3px rgba(240, 180, 24, 0.2);
+		}
+
+		.btn {
+			width: 100%;
+			background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+			color: #000;
+			border: none;
+			padding: 16px;
+			border-radius: 8px;
+			font-weight: 700;
+			font-size: 1.2rem;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			letter-spacing: 1px;
+		}
+
+		.btn:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 10px 20px var(--shadow);
+		}
+
+		.btn:active {
+			transform: translateY(-1px);
+		}
+
+		.instructions {
+			margin-top: 30px;
+			padding: 20px;
+			background: var(--bg);
+			border-radius: 8px;
+			font-size: 0.95rem;
+			color: var(--text-muted);
+			border: 1px solid var(--border);
+		}
+
+		.instructions h3 {
+			color: var(--primary);
+			margin-bottom: 10px;
+			font-size: 1.1rem;
+		}
+
+		audio {
+			display: none;
+		}
+
+		@media (max-width: 768px) {
+			.container {
+				padding: 25px;
+			}
+			
+			.title {
+				font-size: 2.2rem;
+			}
+			
+			.subtitle {
+				font-size: 1.2rem;
+			}
+			
+			.settings-panel {
+				padding: 20px;
+			}
+		}
+		</style>
+	</head>
+
+<body>
+	<div class="container">
+		<div class="header">
+			<h1 class="title">LBHL</h1>
+			<div class="subtitle">Logic-Break Half Life</div>
+			<div class="engine">
+				Powered by <a href="https://github.com/FWGS/xash3d/" class="link" target="_blank">Xash3D FWGS</a> Emscripten
+			</div>
+		</div>
+
+		<div class="divider"></div>
+
+		<div class="settings-panel">
+			<div class="settings-title">Launch Settings</div>
+			
+			<form>
+				<div class="form-group">
+					<label class="form-label">Memory size (MB):</label>
+					<input type="number" value="150" id="mem" min="64" max="2048" step="64">
+				</div>
+
+				<button type="button" class="btn" onclick="location.href='xash.html#' + document.getElementById('mem').value">
+					Launch LBHL
+				</button>
+			</form>
+		</div>
+
+		<div class="instructions">
+			<h3>Instructions:</h3>
+			<p>• Adjust memory allocation based on your system capabilities</p>
+			<p>• Higher values may improve performance but require more resources</p>
+			<p>• Recommended: 150-256 MB for optimal experience</p>
+		</div>
+	</div>
+
+	<script>
+	var a = new Audio('music.mp3');
+	var pashalka_count = 0;
+
+	function play_sound(){
+		if(pashalka_count==10) a.play();
+		pashalka_count+=1;
+	}
+	window.addEventListener('click', play_sound);
+	window.addEventListener('keydown', play_sound);
+	</script>
+</body>
+</html>
