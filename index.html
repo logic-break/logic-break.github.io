@@ -1,596 +1,352 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>logic-break • Games</title>
+    <title>Logic Break | 2021-2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'JetBrains Mono', monospace;
+        :root {
+            --primary: #3b82f6;
+            --bg: #020617;
         }
 
         body {
-            background: #0a0a0a;
-            color: #e0e0e0;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: #f8fafc;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+            scroll-behavior: smooth;
         }
 
-        .matrix-bg {
+        .grid-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.1;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black, transparent 90%);
             z-index: -1;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 60px;
-            position: relative;
-        }
-
-        .glitch {
-            font-size: 4rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            position: relative;
-            text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
-                         0.025em 0.04em 0 #fffc00;
-            animation: glitch 725ms infinite;
-            color: #fff;
-            margin-bottom: 20px;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #bb86fc;
-            opacity: 0.8;
-            margin-bottom: 10px;
-        }
-
-        .terminal {
-            background: rgba(16, 16, 24, 0.95);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 30px;
-            margin: 40px 0;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .terminal-header {
+        /* Лоадер */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: var(--bg);
             display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #333;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .terminal-dots {
-            display: flex;
-            gap: 8px;
+        .loader-bar {
+            width: 240px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 20px;
         }
 
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
+        .loader-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+            animation: progress 2.5s ease-in-out forwards;
         }
 
-        .dot-red { background: #ff5f57; }
-        .dot-yellow { background: #ffbd2e; }
-        .dot-green { background: #28ca42; }
-
-        .terminal-title {
-            margin-left: 15px;
-            color: #888;
-            font-size: 0.9rem;
-        }
-
-        .terminal-content {
-            line-height: 1.6;
-        }
-
-        .prompt {
-            color: #bb86fc;
-            margin-right: 8px;
-        }
-
-        .command {
-            color: #4fc3f7;
-        }
-
-        .output {
-            color: #a5d6a7;
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-
-        .comment {
-            color: #888;
-            font-style: italic;
-        }
-
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin: 50px 0;
+        @keyframes progress {
+            0% { width: 0%; }
+            30% { width: 40%; }
+            60% { width: 45%; }
+            100% { width: 100%; }
         }
 
         .game-card {
-            background: rgba(22, 22, 32, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 25px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .game-card:hover::before {
-            left: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .game-card:hover {
-            transform: translateY(-5px);
-            border-color: #bb86fc;
-            box-shadow: 0 10px 30px rgba(187, 134, 252, 0.2);
+            border-color: var(--primary);
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px -20px rgba(59, 130, 246, 0.4);
         }
 
-        .game-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #bb86fc;
+        .qa-card {
+            background: rgba(30, 41, 59, 0.3);
+            border-left: 3px solid var(--primary);
+            transition: transform 0.2s;
+        }
+        
+        .qa-card:hover {
+            transform: translateX(8px);
+            background: rgba(30, 41, 59, 0.5);
         }
 
-        .game-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .game-desc {
-            color: #aaa;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .qa-section {
-            margin-top: 60px;
-        }
-
-        .qa-item {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: rgba(22, 22, 32, 0.6);
-            border-radius: 8px;
-            border-left: 3px solid #bb86fc;
-        }
-
-        .question {
-            color: #4fc3f7;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .answer {
-            color: #e0e0e0;
-            line-height: 1.5;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 30px 0;
-        }
-
-        .tech-item {
-            background: rgba(187, 134, 252, 0.1);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #bb86fc;
-            border: 1px solid rgba(187, 134, 252, 0.3);
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid #333;
-            color: #666;
-        }
-
-        /* Скрываем аудио элемент */
-        #chinaAudio {
-            position: fixed;
+        .fade-in {
             opacity: 0;
-            pointer-events: none;
-            z-index: -9999;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
         }
 
-        /* Анимации */
-        @keyframes glitch {
-            0% {
-                text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
-                             0.025em 0.04em 0 #fffc00;
-            }
-            15% {
-                text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
-                             0.025em 0.04em 0 #fffc00;
-            }
-            16% {
-                text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
-                             -0.05em -0.05em 0 #fffc00;
-            }
-            49% {
-                text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
-                             -0.05em -0.05em 0 #fffc00;
-            }
-            50% {
-                text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff,
-                             0 -0.04em 0 #fffc00;
-            }
-            99% {
-                text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff,
-                             0 -0.04em 0 #fffc00;
-            }
-            100% {
-                text-shadow: -0.05em 0 0 #00fffc, -0.025em -0.04em 0 #fc00ff,
-                             -0.04em -0.025em 0 #fffc00;
-            }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes matrix-fall {
-            0% {
-                transform: translateY(-100px);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-
-        .floating {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @media (max-width: 768px) {
-            .glitch {
-                font-size: 2.5rem;
-            }
-            
-            .games-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .terminal {
-                padding: 20px;
-            }
-        }
+        .italic-brand { font-style: italic; }
+        .neon-text { text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+        
+        .btn-fun:active { transform: scale(0.9) rotate(2deg); }
     </style>
 </head>
 <body>
-    <div class="matrix-bg" id="matrixBg"></div>
-    
-    <!-- Аудио для пранка -->
-    <audio id="chinaAudio" loop>
-        <source src="china.mp3" type="audio/mpeg">
-    </audio>
 
-    <div class="container">
-        <header class="header">
-            <h1 class="glitch">Logic-Break</h1>
-            <div class="subtitle">Developer • Gamer • Arch Linux Enjoyer • Vibecoder hater</div>
-        </header>
+    <div class="grid-bg"></div>
 
-        <div class="terminal floating">
-            <div class="terminal-header">
-                <div class="terminal-dots">
-                    <div class="dot dot-red"></div>
-                    <div class="dot dot-yellow"></div>
-                    <div class="dot dot-green"></div>
-                </div>
-                <div class="terminal-title">terminal — zsh</div>
-            </div>
-            <div class="terminal-content">
-                <div>
-                    <span class="prompt">λ</span>
-                    <span class="command">whoami</span>
-                </div>
-                <div class="output">logic-break (formerly maximum-arc)</div>
-                
-                <div style="margin-top: 15px;">
-                    <span class="prompt">λ</span>
-                    <span class="command">cat about.txt</span>
-                </div>
-                <div class="output">
-                    Ye hi there, I'm logic-break but I was maximum-arc,<br>
-                    I deleted my gmail so I can't use this account anymore.<br>
-                    There's some games I made for fun.<br><br>
-                    
-                    OS: Arch Linux (KDE Plasma) + Windows 10 LTSC<br>
-                    PC: RTX 4070, 32GB, NVME 1TB, Intel i5-13400f<br>
-                    Languages: Python, Lua, C#, C++, Brainf**k<br>
-                    Prefer: C++ for syntax<br><br>
-                    
-                    <span class="comment"># Sometimes developing Roblox scripts</span><br>
-                    <span class="comment"># Velocity/Solara user</span><br>
-                    <span class="comment"># Not a vibecoder - AI is my helper</span>
-                </div>
-            </div>
+    <!-- Лоадер -->
+    <div id="loader">
+        <div class="text-3xl font-black tracking-tighter mb-2 italic-brand uppercase">
+            LOGIC <span class="text-blue-500">BREAK</span>
         </div>
-
-        <div class="games-grid">
-            <a href="https://logic-break.github.io/games/sudoku.html" class="game-card">
-                <div class="game-icon">🧩</div>
-                <div class="game-title">Sudoku</div>
-                <div class="game-desc">Classic number puzzle with multiple difficulty levels and language support</div>
-            </a>
-
-            <a href="https://logic-break.github.io/games/minesweeper.html" class="game-card">
-                <div class="game-icon">💣</div>
-                <div class="game-title">Minesweeper</div>
-                <div class="game-desc">Strategic mine detection game with lives system and multiple difficulties</div>
-            </a>
-
-            <a href="https://logic-break.github.io/games/gameof15.html" class="game-card">
-                <div class="game-icon">🔢</div>
-                <div class="game-title">15 Puzzle</div>
-                <div class="game-desc">Slide tiles in numerical order in this classic brain teaser</div>
-            </a>
-
-            <a href="https://logic-break.github.io/games/2048.html" class="game-card">
-                <div class="game-icon">⚡</div>
-                <div class="game-title">2048</div>
-                <div class="game-desc">Addictive number merging game with smooth animations</div>
-            </a>
+        <div id="loader-status" class="text-[10px] uppercase tracking-[0.3em] text-blue-400 font-bold h-4">
+            Загрузка мемов...
         </div>
-
-        <div class="qa-section">
-            <h2 style="color: #bb86fc; margin-bottom: 30px; text-align: center;">Q&A</h2>
-            
-            <div class="qa-item">
-                <div class="question">Q: What executor you use?</div>
-                <div class="answer">Velocity when working, or solara because it works anytime, why not xeno? it got no auto updates and unstable.</div>
-            </div>
-
-            <div class="qa-item">
-                <div class="question">Q: Why you installed arch?</div>
-                <div class="answer">Because i like it, i use KDE Plasma.</div>
-            </div>
-
-            <div class="qa-item">
-                <div class="question">Q: What is your native language?</div>
-                <div class="answer">Belarussian, but i prefer russian.</div>
-            </div>
-
-            <div class="qa-item">
-                <div class="question">Q: Why you switched to arch?</div>
-                <div class="answer">Because i dont like windows 11, its very laggy, many crashes, i used arch as main but i installed windows 10 only for roblox.</div>
-            </div>
-
-            <div class="qa-item">
-                <div class="question">Q: What pc you got?</div>
-                <div class="answer">RTX 4070, 32GB, NVME 1TB, Intel i5-13400f.</div>
-            </div>
-
-            <div class="qa-item">
-                <div class="question">Q: Why you made this site?</div>
-                <div class="answer">Idk ask chatgpt.</div>
-            </div>
-
-            <div class="qa-item">
-                <div class="question">Q: Are you a vibecoder?</div>
-                <div class="answer">No, i use AI as helper, not writer.</div>
-            </div>
-
-            <div class="qa-item">
-                <div class="question">Q: What programming languages yk?</div>
-                <div class="answer">Python, Lua, C#, C++(only syntaxis), brainf**k. I prefer c++ because of syntaxis.</div>
-            </div>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
         </div>
-
-        <div class="tech-stack">
-            <div class="tech-item">Arch Linux</div>
-            <div class="tech-item">KDE Plasma</div>
-            <div class="tech-item">Windows 10 LTSC</div>
-            <div class="tech-item">Python</div>
-            <div class="tech-item">Lua</div>
-            <div class="tech-item">C#</div>
-            <div class="tech-item">C++</div>
-            <div class="tech-item">Roblox Scripting</div>
-            <div class="tech-item">HTML/CSS/JS</div>
-        </div>
-
-        <footer class="footer">
-            <p>Made with 💜 by logic-break</p>
-            <p style="margin-top: 10px; font-size: 0.8rem; color: #444;">
-                Formerly maximum-arc • Arch Linux Enjoyer • Not a Vibecoder
-            </p>
-        </footer>
     </div>
 
+    <!-- Навигация -->
+    <nav class="fixed top-0 w-full z-40 border-b border-white/5 bg-slate-950/60 backdrop-blur-xl px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="text-xl font-black tracking-tighter italic italic-brand">LB.HUB <span class="text-[10px] text-blue-500 font-normal ml-2">v.2026</span></div>
+            <div class="flex gap-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <a href="#games" class="hover:text-blue-400 transition">Игрульки</a>
+                <a href="#about" class="hover:text-blue-400 transition">О себе</a>
+                <a href="#qa" class="hover:text-blue-400 transition">Q&A</a>
+                <a href="https://github.com/logic-break" target="_blank" class="hover:text-blue-400 transition">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="min-h-screen flex flex-col items-center justify-center pt-20 px-6 text-center">
+        <div class="fade-in">
+            <div class="mb-4 inline-block px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-widest">
+                Since 2021
+            </div>
+            <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter neon-text italic-brand">
+                LOGIC <span class="text-blue-500">BREAK</span>
+            </h1>
+            <p class="text-slate-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+                Сайт, который я мучаю уже 5 лет. <br>Тут мои баги.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#games" class="btn-fun bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-2xl font-black transition-all shadow-xl shadow-blue-600/30 uppercase tracking-tighter text-sm">
+                    Нажми сюда пж
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games -->
+    <section id="games" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-16 fade-in">
+                <h2 class="text-4xl font-black uppercase italic-brand">Библиотека</h2>
+                <div class="h-1 flex-grow bg-gradient-to-right from-blue-500/50 to-transparent"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- HALF-LIFE -->
+                <a href="https://logic-break.github.io/LBHL/" class="game-card p-6 rounded-[2.5rem] group fade-in">
+                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-orange-600/10 border border-orange-500/20 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-orange-500 opacity-80" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm1.5,15.5h-3v-1h3Zm3.5-5.5h-1l-2-4h-2l-2,4h-1v1h1l.5,1H12l.5-1h1l.5-1h1Z"/></svg>
+                        <div class="absolute inset-0 bg-gradient-to-t from-orange-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors italic-brand">Half-Life</h3>
+                    <p class="text-slate-400 text-sm mb-6">Гордон Фримен одобряет этот редирект. Жми, пока каскадный резонанс не начался.</p>
+                    <div class="flex items-center gap-2 text-orange-500 font-black text-xs uppercase tracking-widest">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                        Run_Game.exe
+                    </div>
+                </a>
+
+                <!-- GAME OF 15 (ПЯТНАШКИ) -->
+                <a href="https://logic-break.github.io/games/gameof15.html" class="game-card p-6 rounded-[2.5rem] group fade-in">
+                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-purple-600/10 border border-purple-500/20 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-purple-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16M10 4v16M14 4v16"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 group-hover:text-purple-500 transition-colors italic-brand">Пятнашки</h3>
+                    <p class="text-slate-400 text-sm mb-6">Классика жанра. Собери их все в правильном порядке. Если сможешь.</p>
+                    <div class="flex items-center gap-2 text-purple-500 font-black text-xs uppercase tracking-widest">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Start_Puzzle
+                    </div>
+                </a>
+
+                <!-- SUDOKU -->
+                <a href="https://logic-break.github.io/games/sudoku.html" class="game-card p-6 rounded-[2.5rem] group fade-in">
+                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-blue-600/10 border border-blue-500/20 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-blue-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 group-hover:text-blue-500 transition-colors italic-brand">Sudoku</h3>
+                    <p class="text-slate-400 text-sm mb-6">Для тех, кто любит страдать над циферками. Сложность: "Глаза болят".</p>
+                    <div class="flex items-center gap-2 text-blue-500 font-black text-xs uppercase tracking-widest">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Play
+                    </div>
+                </a>
+
+                <!-- MINESWEEPER -->
+                <a href="https://logic-break.github.io/games/minesweeper.html" class="game-card p-6 rounded-[2.5rem] group fade-in">
+                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-red-600/10 border border-red-500/20 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-red-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 group-hover:text-red-500 transition-colors italic-brand">Сапер</h3>
+                    <p class="text-slate-400 text-sm mb-6">Бахнет или не бахнет? Вот в чем вопрос. Один клик — и ты либо герой, либо облако пыли.</p>
+                    <div class="flex items-center gap-2 text-red-500 font-black text-xs uppercase tracking-widest">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Bomb.zip
+                    </div>
+                </a>
+
+                <!-- 2048 -->
+                <a href="https://logic-break.github.io/games/2048.html" class="game-card p-6 rounded-[2.5rem] group fade-in">
+                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-yellow-600/10 border border-yellow-500/20 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-yellow-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM9 9h6v6H9V9z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 group-hover:text-yellow-500 transition-colors italic-brand">2048</h3>
+                    <p class="text-slate-400 text-sm mb-6">Складывай квадратики, пока не увидишь магическое число. Вызывает привыкание.</p>
+                    <div class="flex items-center gap-2 text-yellow-500 font-black text-xs uppercase tracking-widest">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Fusion
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- О СЕБЕ -->
+    <section id="about" class="py-32 px-6 bg-slate-900/20">
+        <div class="max-w-3xl mx-auto text-center fade-in">
+            <h2 class="text-4xl font-black mb-12 uppercase italic-brand italic">О себе</h2>
+            <div class="bg-blue-600/5 border border-blue-500/20 p-12 rounded-[3rem] relative overflow-hidden group shadow-2xl">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
+                <p class="text-3xl md:text-5xl font-black text-white leading-tight">
+                    "Драсте, тут пусто, <br><span class="text-blue-500">досвидания</span>"
+                </p>
+                <div class="mt-8 pt-8 border-t border-white/5 flex flex-col items-center gap-2 text-slate-500">
+                    <span class="text-[10px] uppercase tracking-widest font-bold">Системный статус</span>
+                    <span class="px-3 py-1 bg-green-500/20 text-green-400 text-[10px] font-bold rounded-full border border-green-500/30">AFK c 2021 года</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Q&A SECTION -->
+    <section id="qa" class="py-32 px-6 max-w-5xl mx-auto">
+        <div class="text-center mb-16 fade-in">
+            <h2 class="text-5xl font-black uppercase italic-brand italic mb-4">Q&A</h2>
+            <div class="h-1 w-24 bg-blue-500 mx-auto"></div>
+        </div>
+        
+        <div class="space-y-4 fade-in">
+            <!-- Q3 -->
+            <div class="qa-card p-6 rounded-2xl">
+                <p class="text-blue-400 font-bold mb-2">Да или да?</p>
+                <p class="text-slate-300 text-sm">Нет</p>
+            </div>
+            <!-- Q4 -->
+            <div class="qa-card p-6 rounded-2xl">
+                <p class="text-blue-400 font-bold mb-2">Аскорбинке?</p>
+                <p class="text-slate-300 text-sm">Аскорбинке</p>
+            </div>
+            <!-- Q5 -->
+            <div class="qa-card p-6 rounded-2xl">
+                <p class="text-blue-400 font-bold mb-2">Че у тя за пк?</p>
+                <p class="text-slate-300 text-sm">RTX 4070, 32GB, NVME 1TB, Intel i5-13400f</p>
+            </div>
+            <!-- Q6 -->
+            <div class="qa-card p-6 rounded-2xl">
+                <p class="text-blue-400 font-bold mb-2">Q: Why you made this site?</p>
+                <p class="text-slate-300 text-sm italic">Idk ask chatgpt.</p>
+            </div>
+            <!-- Q7 -->
+            <div class="qa-card p-6 rounded-2xl">
+                <p class="text-blue-400 font-bold mb-2">Вайбкодер?</p>
+                <p class="text-slate-300 text-sm">Маловероятно</p>
+            </div>
+            <!-- Q8 -->
+            <div class="qa-card p-6 rounded-2xl">
+                <p class="text-blue-400 font-bold mb-2">Какие яп знаешь?</p>
+                <p class="text-slate-300 text-sm">Пайтон, луа, си, плюсы, джаваскрипт.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 px-6 border-t border-white/5 text-center">
+        <div class="mb-6 flex justify-center gap-4">
+             <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+             <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse delay-75"></div>
+             <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse delay-150"></div>
+        </div>
+        <p class="text-slate-600 text-[10px] uppercase tracking-[0.4em] font-bold italic-brand mb-2">
+            Logic Break &copy; 2021 - 2026
+        </p>
+        <p class="text-slate-700 text-[9px] uppercase tracking-widest">Много пикселей пострадало при разработке</p>
+    </footer>
+
     <script>
-        // Исправленная матрица
-        function createMatrixRain() {
-            const chars = '01010101010101010101アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-            const bg = document.getElementById('matrixBg');
-            
-            // Очищаем старые символы
-            bg.innerHTML = '';
-            
-            for (let i = 0; i < 30; i++) {
-                const char = document.createElement('div');
-                char.className = 'matrix-char';
-                char.textContent = chars[Math.floor(Math.random() * chars.length)];
-                char.style.left = Math.random() * 100 + 'vw';
-                char.style.animation = `matrix-fall ${Math.random() * 3 + 2}s linear infinite`;
-                char.style.animationDelay = Math.random() * 5 + 's';
-                char.style.opacity = Math.random() * 0.3 + 0.1;
-                char.style.fontSize = (Math.random() * 10 + 12) + 'px';
-                char.style.color = `hsl(${Math.random() * 120 + 100}, 100%, 50%)`;
-                bg.appendChild(char);
-            }
-        }
+        const statusPhrases = [
+            "Загрузка мемов...",
+            "Удаление System32...",
+            "Поиск смысла жизни...",
+            "Компиляция багов...",
+            "Проверка на наличие печенек...",
+            "Почти готово (наверное)...",
+            "Фортнайт болс..."
+        ];
 
-        // Пранк с China.mp3
-        let chinaClickCount = 0;
-        let lastChinaClickTime = 0;
-        let chinaActivated = false;
+        let phraseIdx = 0;
+        const statusEl = document.getElementById('loader-status');
+        
+        const phraseInterval = setInterval(() => {
+            phraseIdx = (phraseIdx + 1) % statusPhrases.length;
+            statusEl.textContent = statusPhrases[phraseIdx];
+        }, 400);
 
-        document.addEventListener('click', function(e) {
-            // Проверяем клики по краям экрана (левая или правая 50px)
-            if ((e.clientX < 50 || e.clientX > window.innerWidth - 50) && !chinaActivated) {
-                const currentTime = Date.now();
-                
-                // Сбрасываем счетчик если прошло больше 3 секунд
-                if (currentTime - lastChinaClickTime > 3000) {
-                    chinaClickCount = 0;
-                }
-                
-                chinaClickCount++;
-                lastChinaClickTime = currentTime;
-                
-                console.log(`China clicks: ${chinaClickCount}`);
-                
-                // Активируем после 5 кликов
-                if (chinaClickCount >= 5) {
-                    activateChinaPrank();
-                    chinaActivated = true;
-                }
-            }
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                clearInterval(phraseInterval);
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+            }, 2500);
         });
 
-        function activateChinaPrank() {
-            const audio = document.getElementById('chinaAudio');
-            
-            // Включаем звук на полную громкость
-            audio.volume = 1.0;
-            
-            // Пытаемся включить автовоспроизведение
-            const playPromise = audio.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    console.log("China audio playing!");
-                    openMultipleTabs();
-                }).catch(error => {
-                    console.log("Autoplay blocked");
-                    showChinaActivationMessage();
-                });
-            }
-        }
-
-        function showChinaActivationMessage() {
-            const message = document.createElement('div');
-            message.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: #ff0000;
-                color: white;
-                padding: 20px;
-                border-radius: 10px;
-                z-index: 10000;
-                font-size: 18px;
-                text-align: center;
-                border: 3px solid yellow;
-                cursor: pointer;
-            `;
-            message.innerHTML = `
-                <div>🎵 CHINA PRANK ACTIVATED! 🎵</div>
-                <div style="font-size: 14px; margin-top: 10px;">Click to enable sound</div>
-            `;
-            
-            document.body.appendChild(message);
-            
-            message.addEventListener('click', function() {
-                const audio = document.getElementById('chinaAudio');
-                audio.play();
-                openMultipleTabs();
-                document.body.removeChild(message);
-            }, { once: true });
-        }
-
-        function openMultipleTabs() {
-            const urls = [
-                window.location.href,
-                window.location.href,
-                window.location.href,
-                window.location.href
-            ];
-            
-            urls.forEach((url, index) => {
-                setTimeout(() => {
-                    window.open(url, '_blank');
-                }, index * 1000);
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
             });
-        }
+        }, { threshold: 0.1 });
 
-        // Блокируем правый клик
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // Блокируем DevTools
-        document.addEventListener('keydown', function(e) {
-            if (
-                e.key === 'F12' ||
-                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-                (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-                (e.ctrlKey && e.key === 'u')
-            ) {
-                e.preventDefault();
-                window.open(window.location.href, '_blank');
-            }
-        });
-
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', function() {
-            createMatrixRain();
-        });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
