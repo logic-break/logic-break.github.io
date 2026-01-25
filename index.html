@@ -68,178 +68,278 @@
             100% { width: 100%; }
         }
 
+        /* --- ИКОНКИ В ЕДИНОМ СТИЛЕ --- */
+        .art-box {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .line-art { border: 2px solid currentColor; }
+
+        .hl-style { width: 60px; height: 60px; border-radius: 50%; font-size: 40px; font-weight: 300; display: flex; align-items: center; justify-content: center; padding-bottom: 4px; }
+        
+        .mine-style { width: 40px; height: 40px; border-radius: 50%; position: relative; }
+        .mine-style::before { content: ''; position: absolute; width: 60px; height: 2px; left: -12px; top: 17px; background: currentColor; }
+        .mine-style::after { content: ''; position: absolute; width: 2px; height: 60px; left: 17px; top: -12px; background: currentColor; }
+
+        .sudoku-style { width: 50px; height: 50px; display: grid; grid-template-columns: repeat(2,1fr); gap: 4px; }
+        .s-cell { border: 2px solid currentColor; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .s-dot { width: 4px; height: 4px; background: currentColor; border-radius: 50%; }
+
+        .g2048-style { display: grid; grid-template-columns: repeat(2,1fr); gap: 4px; width: 50px; height: 50px; }
+        .tile-style { border: 2px solid currentColor; border-radius: 4px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+
+        .sol-stack { width: 35px; height: 50px; border: 2px solid currentColor; border-radius: 4px; position: relative; background: #0f172a; }
+        .sol-stack::before, .sol-stack::after { content: ''; position: absolute; width: 100%; height: 100%; border: 2px solid currentColor; border-radius: 4px; background: #0f172a; z-index: -1; }
+        .sol-stack::before { left: 4px; top: -4px; }
+        .sol-stack::after { left: 8px; top: -8px; }
+
         .game-card {
             background: rgba(15, 23, 42, 0.4);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
         }
 
         .game-card:hover {
-            border-color: var(--primary);
-            transform: scale(1.02);
-            box-shadow: 0 20px 40px -20px rgba(59, 130, 246, 0.4);
+            border-color: currentColor;
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 20px 40px -20px currentColor;
         }
 
-        .qa-card {
-            background: rgba(30, 41, 59, 0.3);
-            border-left: 3px solid var(--primary);
-            transition: transform 0.2s;
-        }
-        
-        .qa-card:hover {
-            transform: translateX(8px);
-            background: rgba(30, 41, 59, 0.5);
+        /* Кастомный редирект-модал */
+        #redirect-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
+        .modal-content {
+            background: #0f172a;
+            border: 2px solid var(--primary);
+            max-width: 420px;
+            width: 100%;
+            padding: 2.5rem;
+            border-radius: 2.5rem;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.2);
+        }
+
+        #bsod {
+            position: fixed;
+            inset: 0;
+            background-color: #0078d7;
+            color: white;
+            z-index: 3000;
+            display: none;
+            font-family: "Segoe UI", sans-serif;
+            padding: 5% 8%;
+            cursor: none;
+            user-select: none;
+        }
+
+        .italic-brand { font-style: italic; }
+        .neon-text { text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+
+        .section-title {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: #64748b;
+            font-size: 10px;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.05); }
+
+        .url-display {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            color: var(--primary);
+            word-break: break-all;
+            margin: 15px 0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* Плавное появление */
         .fade-in {
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.6s ease-out;
         }
-
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .italic-brand { font-style: italic; }
-        .neon-text { text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
-        
-        .btn-fun:active { transform: scale(0.9) rotate(2deg); }
+        /* Q&A карточки */
+        .qa-card {
+            background: rgba(30, 41, 59, 0.3);
+            border-left: 3px solid var(--primary);
+            transition: transform 0.2s;
+        }
+        .qa-card:hover {
+            transform: translateX(8px);
+            background: rgba(30, 41, 59, 0.5);
+        }
     </style>
 </head>
 <body>
 
+    <!-- Модалка подтверждения -->
+    <div id="redirect-modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-black uppercase mb-2 italic-brand">Уже уходишь?</h3>
+            <p class="text-slate-400 text-sm">Ты ща перейдешь по этой ссылке:</p>
+            <div id="target-url-display" class="url-display">...</div>
+            <p class="text-slate-500 text-[11px] mb-8">Точно хочешь покинуть?</p>
+            <div class="flex gap-4">
+                <button id="cancel-redirect" class="flex-1 px-4 py-3 rounded-xl bg-slate-800 font-bold hover:bg-slate-700 transition text-sm">Не, я передумал</button>
+                <button id="confirm-redirect" class="flex-1 px-4 py-3 rounded-xl bg-blue-600 font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-600/20 text-sm uppercase">Ну го</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BSOD (Экран смерти) -->
+    <div id="bsod">
+        <div class="text-[160px] leading-none mb-8">:(</div>
+        <div class="text-4xl md:text-5xl font-light mb-12 max-w-5xl leading-tight">
+            Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.
+        </div>
+        <div class="text-3xl mb-16"><span id="bsod-percent">0</span>% complete</div>
+        <div class="flex gap-8 items-start">
+            <div class="bg-white p-2 w-44 h-44 shrink-0">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://logic-break.github.io" class="w-full h-full" style="image-rendering: pixelated;">
+            </div>
+            <div class="text-2xl opacity-90 leading-relaxed">
+                For more information about this issue, visit https://www.windows.com/stopcode<br><br>
+                Stop code: CRITICAL_PROCESS_DIED_FROM_MEMES
+            </div>
+        </div>
+    </div>
+
     <div class="grid-bg"></div>
 
-    <!-- Лоадер -->
     <div id="loader">
         <div class="text-3xl font-black tracking-tighter mb-2 italic-brand uppercase">
             LOGIC <span class="text-blue-500">BREAK</span>
         </div>
-        <div id="loader-status" class="text-[10px] uppercase tracking-[0.3em] text-blue-400 font-bold h-4">
-            Загрузка мемов...
-        </div>
-        <div class="loader-bar">
-            <div class="loader-progress"></div>
-        </div>
+        <div id="loader-status" class="text-[10px] uppercase tracking-[0.3em] text-blue-400 font-bold h-4 italic">Загрузка мемов...</div>
+        <div class="loader-bar"><div class="loader-progress"></div></div>
     </div>
 
-    <!-- Навигация -->
     <nav class="fixed top-0 w-full z-40 border-b border-white/5 bg-slate-950/60 backdrop-blur-xl px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="text-xl font-black tracking-tighter italic italic-brand">LB.HUB <span class="text-[10px] text-blue-500 font-normal ml-2">v.2026</span></div>
+            <div class="text-xl font-black tracking-tighter italic italic-brand">LB<span class="text-[10px] text-blue-500 font-normal ml-2">v.2026</span></div>
             <div class="flex gap-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">
                 <a href="#games" class="hover:text-blue-400 transition">Игрульки</a>
                 <a href="#about" class="hover:text-blue-400 transition">О себе</a>
                 <a href="#qa" class="hover:text-blue-400 transition">Q&A</a>
-                <a href="https://github.com/logic-break" target="_blank" class="hover:text-blue-400 transition">GitHub</a>
+                <button data-url="https://github.com/logic-break" class="redirect-trigger hover:text-blue-400 transition uppercase">GitHub</button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="min-h-screen flex flex-col items-center justify-center pt-20 px-6 text-center">
+    <header class="min-h-screen flex flex-col items-center justify-center pt-20 px-6 text-center">
         <div class="fade-in">
             <div class="mb-4 inline-block px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-widest">
-                Since 2021
+                Version 1.33.7
             </div>
             <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter neon-text italic-brand">
                 LOGIC <span class="text-blue-500">BREAK</span>
             </h1>
             <p class="text-slate-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
-                Сайт, который я мучаю уже 5 лет. <br>Тут мои баги.
+                Сайт, который я мучаю уже 5 лет. <br>Тут мои баги и мемы.
             </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="#games" class="btn-fun bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-2xl font-black transition-all shadow-xl shadow-blue-600/30 uppercase tracking-tighter text-sm">
-                    Нажми сюда пж
-                </a>
-            </div>
+            <button id="danger-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-2xl font-black transition-all shadow-xl shadow-blue-600/30 uppercase tracking-tighter text-sm">
+                Не жми сюда пж
+            </button>
         </div>
-    </section>
+    </header>
 
-    <!-- Games -->
-    <section id="games" class="py-32 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-4 mb-16 fade-in">
-                <h2 class="text-4xl font-black uppercase italic-brand">Библиотека</h2>
-                <div class="h-1 flex-grow bg-gradient-to-right from-blue-500/50 to-transparent"></div>
+    <main id="games" class="py-32 px-6 max-w-7xl mx-auto">
+        
+        <!-- МОИ ИГРЫ -->
+        <div class="mb-24 fade-in">
+            <div class="flex items-center gap-4 mb-12 opacity-50">
+                <span class="text-[10px] font-black uppercase tracking-[0.4em]">My Games</span>
+                <div class="h-px flex-1 bg-white/10"></div>
             </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                <!-- HALF-LIFE -->
-                <a href="https://logic-break.github.io/LBHL/" class="game-card p-6 rounded-[2.5rem] group fade-in">
-                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-orange-600/10 border border-orange-500/20 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-orange-500 opacity-80" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm1.5,15.5h-3v-1h3Zm3.5-5.5h-1l-2-4h-2l-2,4h-1v1h1l.5,1H12l.5-1h1l.5-1h1Z"/></svg>
-                        <div class="absolute inset-0 bg-gradient-to-t from-orange-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2 group-hover:text-orange-500 transition-colors italic-brand">Half-Life</h3>
-                    <p class="text-slate-400 text-sm mb-6">Гордон Фримен одобряет этот редирект. Жми, пока каскадный резонанс не начался.</p>
-                    <div class="flex items-center gap-2 text-orange-500 font-black text-xs uppercase tracking-widest">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
-                        Run_Game.exe
-                    </div>
-                </a>
+                <div data-url="https://logic-break.github.io/LBHL/" class="game-card redirect-trigger p-8 rounded-[2.5rem] text-orange-500">
+                    <div class="art-box"><div class="hl-style line-art">λ</div></div>
+                    <h3 class="text-xl font-bold italic-brand mb-1">Half-Life</h3>
+                    <p class="text-slate-500 text-xs">Гордон Фримен жмать кнопка</p>
+                </div>
 
-                <!-- GAME OF 15 (ПЯТНАШКИ) -->
-                <a href="https://logic-break.github.io/games/gameof15.html" class="game-card p-6 rounded-[2.5rem] group fade-in">
-                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-purple-600/10 border border-purple-500/20 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-purple-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16M10 4v16M14 4v16"></path></svg>
+                <div data-url="https://logic-break.github.io/games/gameof15.html" class="game-card redirect-trigger p-8 rounded-[2.5rem] text-purple-500">
+                    <div class="art-box">
+                        <div class="sudoku-style">
+                            <div class="s-cell"></div><div class="s-cell"></div><div class="s-cell"></div><div class="s-cell"></div>
+                        </div>
                     </div>
-                    <h3 class="text-2xl font-bold mb-2 group-hover:text-purple-500 transition-colors italic-brand">Пятнашки</h3>
-                    <p class="text-slate-400 text-sm mb-6">Классика жанра. Собери их все в правильном порядке. Если сможешь.</p>
-                    <div class="flex items-center gap-2 text-purple-500 font-black text-xs uppercase tracking-widest">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        Start_Puzzle
-                    </div>
-                </a>
+                    <h3 class="text-xl font-bold italic-brand mb-1">Пятнашки</h3>
+                    <p class="text-slate-500 text-xs">Двигай кубики, бесись</p>
+                </div>
 
-                <!-- SUDOKU -->
-                <a href="https://logic-break.github.io/games/sudoku.html" class="game-card p-6 rounded-[2.5rem] group fade-in">
-                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-blue-600/10 border border-blue-500/20 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-blue-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                <div data-url="https://logic-break.github.io/games/sudoku.html" class="game-card redirect-trigger p-8 rounded-[2.5rem] text-cyan-400">
+                    <div class="art-box">
+                        <div class="sudoku-style">
+                            <div class="s-cell"><div class="s-dot"></div></div><div class="s-cell"></div>
+                            <div class="s-cell"></div><div class="s-cell"><div class="s-dot"></div></div>
+                        </div>
                     </div>
-                    <h3 class="text-2xl font-bold mb-2 group-hover:text-blue-500 transition-colors italic-brand">Sudoku</h3>
-                    <p class="text-slate-400 text-sm mb-6">Для тех, кто любит страдать над циферками. Сложность: "Глаза болят".</p>
-                    <div class="flex items-center gap-2 text-blue-500 font-black text-xs uppercase tracking-widest">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        Play
-                    </div>
-                </a>
+                    <h3 class="text-xl font-bold italic-brand mb-1">Sudoku</h3>
+                    <p class="text-slate-500 text-xs">Цифры, клетки, все дела</p>
+                </div>
 
-                <!-- MINESWEEPER -->
-                <a href="https://logic-break.github.io/games/minesweeper.html" class="game-card p-6 rounded-[2.5rem] group fade-in">
-                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-red-600/10 border border-red-500/20 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-red-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2 group-hover:text-red-500 transition-colors italic-brand">Сапер</h3>
-                    <p class="text-slate-400 text-sm mb-6">Бахнет или не бахнет? Вот в чем вопрос. Один клик — и ты либо герой, либо облако пыли.</p>
-                    <div class="flex items-center gap-2 text-red-500 font-black text-xs uppercase tracking-widest">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        Bomb.zip
-                    </div>
-                </a>
-
-                <!-- 2048 -->
-                <a href="https://logic-break.github.io/games/2048.html" class="game-card p-6 rounded-[2.5rem] group fade-in">
-                    <div class="relative aspect-video rounded-2xl overflow-hidden mb-6 bg-yellow-600/10 border border-yellow-500/20 flex items-center justify-center">
-                        <svg class="w-16 h-16 text-yellow-500 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM9 9h6v6H9V9z"></path></svg>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2 group-hover:text-yellow-500 transition-colors italic-brand">2048</h3>
-                    <p class="text-slate-400 text-sm mb-6">Складывай квадратики, пока не увидишь магическое число. Вызывает привыкание.</p>
-                    <div class="flex items-center gap-2 text-yellow-500 font-black text-xs uppercase tracking-widest">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        Fusion
-                    </div>
-                </a>
+                <div data-url="https://logic-break.github.io/games/minesweeper.html" class="game-card redirect-trigger p-8 rounded-[2.5rem] text-red-500">
+                    <div class="art-box"><div class="mine-style line-art"></div></div>
+                    <h3 class="text-xl font-bold italic-brand mb-1">Сапер</h3>
+                    <p class="text-slate-500 text-xs">Бум или не бум?</p>
+                </div>
 
             </div>
         </div>
-    </section>
 
-    <!-- О СЕБЕ -->
+        <!-- СТОРОННИЕ ИГРЫ -->
+        <div class="fade-in">
+            <div class="flex items-center gap-4 mb-12 opacity-50">
+                <span class="text-[10px] font-black uppercase tracking-[0.4em]">Not My Games</span>
+                <div class="h-px flex-1 bg-white/10"></div>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <div data-url="https://www.free-spider-solitaire.com/" class="game-card redirect-trigger p-8 rounded-[2.5rem] text-emerald-400">
+                    <div class="art-box"><div class="sol-stack"></div></div>
+                    <h3 class="text-xl font-bold italic-brand mb-1">Solitaire</h3>
+                    <p class="text-slate-500 text-xs">Пасьянс «Паук» (Внешний)</p>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Секция "О себе" -->
     <section id="about" class="py-32 px-6 bg-slate-900/20">
         <div class="max-w-3xl mx-auto text-center fade-in">
             <h2 class="text-4xl font-black mb-12 uppercase italic-brand italic">О себе</h2>
@@ -264,32 +364,27 @@
         </div>
         
         <div class="space-y-4 fade-in">
-            <!-- Q3 -->
+            <!-- Q1 -->
             <div class="qa-card p-6 rounded-2xl">
                 <p class="text-blue-400 font-bold mb-2">Да или да?</p>
                 <p class="text-slate-300 text-sm">Нет</p>
             </div>
-            <!-- Q4 -->
+            <!-- Q2 -->
             <div class="qa-card p-6 rounded-2xl">
                 <p class="text-blue-400 font-bold mb-2">Аскорбинке?</p>
                 <p class="text-slate-300 text-sm">Аскорбинке</p>
             </div>
-            <!-- Q5 -->
+            <!-- Q3 -->
             <div class="qa-card p-6 rounded-2xl">
                 <p class="text-blue-400 font-bold mb-2">Че у тя за пк?</p>
                 <p class="text-slate-300 text-sm">RTX 4070, 32GB, NVME 1TB, Intel i5-13400f</p>
             </div>
-            <!-- Q6 -->
-            <div class="qa-card p-6 rounded-2xl">
-                <p class="text-blue-400 font-bold mb-2">Q: Why you made this site?</p>
-                <p class="text-slate-300 text-sm italic">Idk ask chatgpt.</p>
-            </div>
-            <!-- Q7 -->
+            <!-- Q5 -->
             <div class="qa-card p-6 rounded-2xl">
                 <p class="text-blue-400 font-bold mb-2">Вайбкодер?</p>
                 <p class="text-slate-300 text-sm">Маловероятно</p>
             </div>
-            <!-- Q8 -->
+            <!-- Q6 -->
             <div class="qa-card p-6 rounded-2xl">
                 <p class="text-blue-400 font-bold mb-2">Какие яп знаешь?</p>
                 <p class="text-slate-300 text-sm">Пайтон, луа, си, плюсы, джаваскрипт.</p>
@@ -297,47 +392,82 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-20 px-6 border-t border-white/5 text-center">
-        <div class="mb-6 flex justify-center gap-4">
-             <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-             <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse delay-75"></div>
-             <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse delay-150"></div>
-        </div>
-        <p class="text-slate-600 text-[10px] uppercase tracking-[0.4em] font-bold italic-brand mb-2">
-            Logic Break &copy; 2021 - 2026
-        </p>
-        <p class="text-slate-700 text-[9px] uppercase tracking-widest">Много пикселей пострадало при разработке</p>
+    <footer class="py-20 border-t border-white/5 text-center opacity-40 fade-in">
+        <p class="text-[10px] font-black uppercase tracking-[0.5em] italic-brand">Logic Break © 2021 - 2026</p>
     </footer>
 
     <script>
-        const statusPhrases = [
-            "Загрузка мемов...",
-            "Удаление System32...",
-            "Поиск смысла жизни...",
-            "Компиляция багов...",
-            "Проверка на наличие печенек...",
-            "Почти готово (наверное)...",
-            "Фортнайт болс..."
+        // Логика лоадера с мемами
+        const phrases = [
+            "Загрузка мемов...", 
+            "Поиск смысла...", 
+            "Дефрагментация кота...", 
+            "Фортнайт болс...", 
+            "Генерация багов...",
+            "Чистка кэша от рофлов...",
+            "Сборка кубика рубика...",
+            "Проверка на ботов..."
         ];
-
-        let phraseIdx = 0;
+        let pIdx = 0;
         const statusEl = document.getElementById('loader-status');
-        
-        const phraseInterval = setInterval(() => {
-            phraseIdx = (phraseIdx + 1) % statusPhrases.length;
-            statusEl.textContent = statusPhrases[phraseIdx];
+        const interval = setInterval(() => {
+            pIdx = (pIdx + 1) % phrases.length;
+            if(statusEl) statusEl.textContent = phrases[pIdx];
         }, 400);
 
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('loader');
+        window.onload = () => {
             setTimeout(() => {
-                clearInterval(phraseInterval);
-                loader.style.opacity = '0';
-                loader.style.visibility = 'hidden';
-            }, 2500);
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 600);
+                clearInterval(interval);
+            }, 2000);
+        };
+
+        // Кастомный редирект
+        const modal = document.getElementById('redirect-modal');
+        const confirmBtn = document.getElementById('confirm-redirect');
+        const cancelBtn = document.getElementById('cancel-redirect');
+        const urlDisplay = document.getElementById('target-url-display');
+        let pendingUrl = '';
+
+        document.querySelectorAll('.redirect-trigger').forEach(trigger => {
+            trigger.onclick = () => {
+                pendingUrl = trigger.getAttribute('data-url');
+                urlDisplay.textContent = pendingUrl;
+                modal.style.display = 'flex';
+            };
         });
 
+        cancelBtn.onclick = () => modal.style.display = 'none';
+        confirmBtn.onclick = () => {
+            modal.style.display = 'none';
+            window.open(pendingUrl, '_blank');
+        };
+
+        // Закрытие модалки по клику вне контента
+        window.onclick = (e) => {
+            if (e.target == modal) modal.style.display = 'none';
+        }
+
+        // BSOD
+        document.getElementById('danger-btn').onclick = () => {
+            try { document.documentElement.requestFullscreen(); } catch(e){}
+            const bsod = document.getElementById('bsod');
+            const perc = document.getElementById('bsod-percent');
+            bsod.style.display = 'block';
+            let val = 0;
+            const itv = setInterval(() => {
+                val += Math.floor(Math.random() * 5) + 1;
+                if(val >= 100) {
+                    val = 100;
+                    clearInterval(itv);
+                    setTimeout(() => location.reload(), 2000);
+                }
+                perc.textContent = val;
+            }, 100);
+        };
+
+        // Плавное появление при скролле
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -347,6 +477,22 @@
         }, { threshold: 0.1 });
 
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Плавная навигация по якорям
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
