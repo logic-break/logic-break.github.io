@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pearl Hash</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #3b82f6; --b: #020617; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--b); color: #f8fafc; overflow-x: hidden; }
+        .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(circle at center, black, transparent 90%); z-index: -1; }
+        .glass-card { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        input:focus { border-color: var(--p); box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); }
+        .desc-text { line-height: 1.6; color: #94a3b8; }
+        .copy-success { color: #10b981 !important; border-color: #10b981 !important; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 space-y-12">
+    <div class="grid-bg"></div>
+
+    <div class="w-full max-w-lg space-y-8">
+        <h1 class="text-3xl font-black italic tracking-tighter">Pearl <span class="text-blue-500">Hash</span></h1>
+        
+        <div class="glass-card p-8 rounded-[2.5rem] shadow-2xl space-y-8">
+            <div class="space-y-3">
+                <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">Секретное слово</label>
+                <input type="text" id="H5DFSITUIQ" placeholder="Например: фрикадельки" class="w-full bg-slate-950/50 border border-white/5 p-4 rounded-2xl focus:outline-none text-blue-400 font-medium transition-all">
+            </div>
+
+            <div class="space-y-3">
+                <label class="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">Твой новый пароль</label>
+                <div class="relative">
+                    <div id="HSDFSITUIQ" class="w-full bg-slate-950/80 p-5 pr-24 rounded-2xl border border-blue-500/10 font-mono text-sm text-slate-400 break-all min-h-[60px] flex items-center italic">awaiting...</div>
+                    <button id="H_COPY" class="absolute right-3 top-1/2 -translate-y-1/2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-500 text-[10px] font-bold px-3 py-2 rounded-xl border border-blue-500/20 transition-all opacity-0 pointer-events-none">КОПИЯ</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-8 rounded-[2rem] space-y-4">
+            <h2 class="text-sm font-bold uppercase tracking-widest text-blue-500">Для чего этот движ?</h2>
+            <p class="desc-text text-xs">
+                Смотри: ты вписываешь сюда что-то, что у тебя в голове засело намертво (те же <span class="text-blue-400 font-bold">'фрикадельки'</span>), и магия Pearl Hash выдает тебе уникальный код.
+            </p>
+            <p class="desc-text text-xs">
+                Этот код ты ставишь как пароль везде. Забыл? Зашел сюда, ввел <span class="text-blue-400 font-bold">'фрикадельки'</span> и забрал свой пароль обратно.
+            </p>
+            <div class="p-4 bg-blue-500/5 border-l-2 border-blue-500 rounded-r-xl">
+                <p class="desc-text text-xs italic">
+                    <span class="text-blue-400 font-bold">Важно:</span> Это «билет в один конец». Из полученного хеша <span class="text-white">невозможно</span> вытащить твое слово. Даже если хакер увидит твой хеш, он никогда не узнает, что ты любишь фрикадельки.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function(){
+        const H8DFSITUIQ = [0x1, "textContent", "value", "addEventListener", "getElementById", "charCodeAt", "toString", "classList", "add", "remove"];
+        const H0DFSITUIQ = { H2DFSITUIQ: (1n << 64n) - 1n, H3DFSITUIQ: 7381043370685969259n, H4DFSITUIQ: 0xff51afd7ed558ccdn, H6DFSITUIQ: 0xc4ceb9fe1a85ec53n };
+
+        function HBDFSITUIQ(_in) {
+            if (!_in) return "";
+            let H7DFSITUIQ = (BigInt(_in.length) ^ H0DFSITUIQ.H3DFSITUIQ) & H0DFSITUIQ.H2DFSITUIQ;
+            for (let i = 0; i < _in.length; i++) {
+                H7DFSITUIQ ^= BigInt(_in[H8DFSITUIQ[5]](i));
+                H7DFSITUIQ = (H7DFSITUIQ * H0DFSITUIQ.H3DFSITUIQ) & H0DFSITUIQ.H2DFSITUIQ;
+                H7DFSITUIQ = ((H7DFSITUIQ << 31n) & H0DFSITUIQ.H2DFSITUIQ) | (H7DFSITUIQ >> 33n);
+            }
+            [H0DFSITUIQ.H4DFSITUIQ, H0DFSITUIQ.H6DFSITUIQ].forEach(H_S => {
+                H7DFSITUIQ ^= (H7DFSITUIQ >> 33n);
+                H7DFSITUIQ = (H7DFSITUIQ * H_S) & H0DFSITUIQ.H2DFSITUIQ;
+            });
+            return (H7DFSITUIQ ^ (H7DFSITUIQ >> 33n))[H8DFSITUIQ[6]](16);
+        }
+
+        const H_I = document[H8DFSITUIQ[4]]("H5DFSITUIQ");
+        const H_O = document[H8DFSITUIQ[4]]("HSDFSITUIQ");
+        const H_C = document[H8DFSITUIQ[4]]("H_COPY");
+
+        H_I[H8DFSITUIQ[3]]("input", () => {
+            const H_V = H_I[H8DFSITUIQ[2]];
+            if (H_V) {
+                H_O[H8DFSITUIQ[1]] = HBDFSITUIQ(H_V);
+                H_O.style.color = "#3b82f6";
+                H_O.style.fontStyle = "normal";
+                H_C.style.opacity = "1";
+                H_C.style.pointerEvents = "auto";
+            } else {
+                H_O[H8DFSITUIQ[1]] = "awaiting...";
+                H_O.style.color = "";
+                H_O.style.fontStyle = "italic";
+                H_C.style.opacity = "0";
+                H_C.style.pointerEvents = "none";
+            }
+        });
+
+        H_C[H8DFSITUIQ[3]]("click", () => {
+            navigator.clipboard.writeText(H_O[H8DFSITUIQ[1]]);
+            H_C.textContent = "ГОТОВО";
+            H_C.classList.add('copy-success');
+            setTimeout(() => {
+                H_C.textContent = "КОПИЯ";
+                H_C.classList.remove('copy-success');
+            }, 1000);
+        });
+    })();
+    </script>
+</body>
+</html>
