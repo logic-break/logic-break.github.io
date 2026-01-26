@@ -4,22 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сапер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #3b82f6;
+            --bg: #020617;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: var(--bg);
+            color: #f8fafc;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black, transparent 90%);
+            z-index: -1;
         }
 
         .container {
@@ -37,12 +56,14 @@
             align-items: center;
             width: 100%;
             padding: 10px 0;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         h1 {
             font-size: 2rem;
-            color: #bb86fc;
+            color: var(--primary);
+            font-weight: 900;
+            font-family: 'Inter', sans-serif;
         }
 
         .settings {
@@ -53,29 +74,30 @@
         .language-selector, .difficulty-selector {
             display: flex;
             gap: 8px;
-            background: #1e1e1e;
+            background: rgba(30, 41, 59, 0.5);
             padding: 5px;
             border-radius: 6px;
         }
 
         .lang-btn, .diff-btn {
-            background: #333;
-            color: #e0e0e0;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f8fafc;
             border: none;
             padding: 5px 10px;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .lang-btn:hover, .diff-btn:hover {
-            background: #444;
+            background: rgba(30, 41, 59, 0.8);
         }
 
         .lang-btn.active, .diff-btn.active {
-            background: #bb86fc;
-            color: #121212;
+            background: var(--primary);
+            color: var(--bg);
         }
 
         .game-info {
@@ -83,6 +105,10 @@
             justify-content: space-between;
             width: 100%;
             margin-bottom: 10px;
+            background: rgba(30, 41, 59, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .timer, .mines-counter, .lives {
@@ -90,33 +116,37 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-family: 'Fira Code', monospace;
         }
 
         .mines-counter, .lives {
-            color: #bb86fc;
+            color: var(--primary);
         }
 
         .heart {
-            color: #ff5252;
+            color: #ef4444;
             font-size: 1.2rem;
         }
 
         .heart.empty {
-            color: #444;
+            color: #475569;
         }
 
         .minesweeper-board {
             display: grid;
-            gap: 2px;
-            background-color: #333;
-            border: 2px solid #333;
+            gap: 3px;
+            background-color: rgba(30, 41, 59, 0.3);
+            border: 2px solid rgba(59, 130, 246, 0.2);
             width: 100%;
             max-width: 450px;
             aspect-ratio: 1 / 1;
+            padding: 3px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         .cell {
-            background-color: #2a2a2a;
+            background: rgba(30, 41, 59, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -125,19 +155,21 @@
             cursor: pointer;
             transition: all 0.2s;
             user-select: none;
+            font-family: 'Fira Code', monospace;
+            border-radius: 4px;
         }
 
         .cell:hover {
-            background-color: #3a3a3a;
+            background: rgba(59, 130, 246, 0.2);
         }
 
         .cell.revealed {
-            background-color: #1e1e1e;
+            background: rgba(15, 23, 42, 0.8);
             cursor: default;
         }
 
         .cell.revealed:hover {
-            background-color: #1e1e1e;
+            background: rgba(15, 23, 42, 0.8);
         }
 
         .cell.flagged::after {
@@ -149,18 +181,18 @@
         }
 
         .cell.mine.revealed {
-            background-color: #4a2a2a;
+            background: rgba(220, 38, 38, 0.3);
             animation: pulse 0.5s;
         }
 
-        .cell.number-1 { color: #2196F3; }
-        .cell.number-2 { color: #4CAF50; }
-        .cell.number-3 { color: #f44336; }
-        .cell.number-4 { color: #9C27B0; }
-        .cell.number-5 { color: #FF9800; }
-        .cell.number-6 { color: #00BCD4; }
-        .cell.number-7 { color: #795548; }
-        .cell.number-8 { color: #607D8B; }
+        .cell.number-1 { color: #60a5fa; }
+        .cell.number-2 { color: #4ade80; }
+        .cell.number-3 { color: #f87171; }
+        .cell.number-4 { color: #c084fc; }
+        .cell.number-5 { color: #fbbf24; }
+        .cell.number-6 { color: #22d3ee; }
+        .cell.number-7 { color: #d97706; }
+        .cell.number-8 { color: #94a3b8; }
 
         .controls {
             display: flex;
@@ -173,36 +205,42 @@
         .action-buttons {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
 
         .action-btn {
-            background: #333;
-            color: #e0e0e0;
-            border: none;
-            padding: 12px 0;
+            background: rgba(30, 41, 59, 0.7);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 0;
             font-size: 1rem;
-            border-radius: 4px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
         }
 
         .action-btn:hover {
-            background: #444;
+            background: rgba(30, 41, 59, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .action-btn.primary {
-            background: #bb86fc;
-            color: #121212;
+            background: linear-gradient(145deg, var(--primary), #1d4ed8);
+            color: var(--bg);
+            border: none;
         }
 
         .action-btn.primary:hover {
-            background: #9d6ad8;
+            background: linear-gradient(145deg, #60a5fa, var(--primary));
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
         }
 
         .action-btn:disabled {
-            background: #2a2a2a;
-            color: #666;
+            background: rgba(30, 41, 59, 0.3);
+            color: #64748b;
             cursor: not-allowed;
         }
 
@@ -211,16 +249,24 @@
             font-size: 1.1rem;
             height: 24px;
             text-align: center;
+            font-family: 'Inter', sans-serif;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(30, 41, 59, 0.3);
+            width: 100%;
+            max-width: 450px;
         }
 
         .game-over {
-            color: #ff5252;
-            font-weight: bold;
+            color: #ef4444;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
         }
 
         .game-won {
-            color: #4caf50;
-            font-weight: bold;
+            color: #4ade80;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
         }
 
         @keyframes pulse {
@@ -252,10 +298,17 @@
             .cell {
                 font-size: 1rem;
             }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="grid-bg"></div>
     <div class="container">
         <header>
             <h1 id="title">Сапер</h1>
@@ -482,7 +535,8 @@
 
         // Функция для проверки всех флагов
         function checkAllFlags() {
-            const totalCells = rows * cols;
+            if (!gameActive) return;
+            
             let flaggedCells = 0;
             let correctFlags = 0;
             
@@ -500,37 +554,16 @@
                 }
             }
             
-            // Если все клетки в флагах И все флаги стоят на минах
-            if (flaggedCells === totalCells && correctFlags === totalMines) {
-                playRedFlagSound();
-                return true;
-            }
-            
-            // Или если все мины помечены флагами (даже если есть лишние флаги)
-            if (correctFlags === totalMines && flaggedCells >= totalMines) {
-                playRedFlagSound();
-                return true;
-            }
-            
-            return false;
-        }
-
-        // Функция для воспроизведения звука
-        function playRedFlagSound() {
-            const audio = new Audio('redflag.mp3');
-            audio.volume = 1.0;
-            
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Автовоспроизведение звука заблокировано");
-                    // Показываем сообщение, если звук не воспроизводится
-                    gameStatus.textContent = "🎵 RED FLAG! 🎵 (Звук заблокирован)";
-                    gameStatus.style.color = '#ff5252';
-                    setTimeout(() => {
-                        if (gameActive) gameStatus.textContent = '';
-                    }, 3000);
-                });
+            // Если все мины помечены флагами и нет лишних флагов
+            if (correctFlags === totalMines && flaggedCells === totalMines) {
+                gameActive = false;
+                clearInterval(timerInterval);
+                gameStatus.textContent = translations[currentLanguage].complete;
+                gameStatus.style.color = '#4ade80';
+                gameStatus.classList.add('game-won');
+                
+                // Показываем все мины
+                revealAllMines();
             }
         }
 
@@ -553,9 +586,6 @@
                 cell.isRevealed = true;
                 cell.element.classList.add('revealed', 'mine');
                 loseLife();
-                
-                // Проверяем флаги после потери жизни (на всякий случай)
-                setTimeout(() => checkAllFlags(), 100);
                 return;
             }
             
@@ -588,7 +618,7 @@
             checkWinCondition();
             
             // Также проверяем флаги после открытия клетки
-            setTimeout(() => checkAllFlags(), 100);
+            checkAllFlags();
         }
 
         // Переключение флага
@@ -622,7 +652,7 @@
             
             // Показываем сообщение об ошибке
             gameStatus.textContent = translations[currentLanguage].mistake;
-            gameStatus.style.color = '#ff5252';
+            gameStatus.style.color = '#ef4444';
             
             // Если жизни закончились
             if (lives <= 0) {
@@ -656,7 +686,7 @@
                 gameActive = false;
                 clearInterval(timerInterval);
                 gameStatus.textContent = translations[currentLanguage].complete;
-                gameStatus.style.color = '#4caf50';
+                gameStatus.style.color = '#4ade80';
                 gameStatus.classList.add('game-won');
                 
                 // Помечаем все мины флагами
@@ -753,7 +783,7 @@
             
             gameStatus.textContent = '';
             gameStatus.classList.remove('game-over', 'game-won');
-            gameStatus.style.color = '#e0e0e0';
+            gameStatus.style.color = '#f8fafc';
             
             updateMinesCounter();
             updateLivesDisplay();
@@ -790,8 +820,8 @@
             titleElement.textContent = translations[currentLanguage].title;
             hintBtn.textContent = translations[currentLanguage].hint;
             newGameBtn.textContent = translations[currentLanguage].newGame;
-            timerElement.textContent = `${translations[currentLanguage].time}: 00:00`;
-            minesCounterElement.textContent = `${translations[currentLanguage].mines}: ${totalMines}`;
+            timerElement.textContent = `00:00`;
+            minesCounterElement.textContent = `💣: ${totalMines}`;
             updateMinesCounter();
             updateLivesDisplay();
         }
