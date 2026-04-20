@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Private Chat</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        :root {
+            --bg: #121212;
+            --panel: #1e1e1e;
+            --accent: #007aff;
+            --text: #e0e0e0;
+            --my-msg: #0056b3;
+            --friend-msg: #333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            height: 90vh;
+            background: var(--panel);
+            display: flex;
+            flex-direction: column;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 20px;
+            background: #252525;
+            border-bottom: 1px solid #333;
+        }
+
+        #chat {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .my {
+            align-self: flex-end;
+            background: var(--my-msg);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .friend {
+            align-self: flex-start;
+            background: var(--friend-msg);
+            border-bottom-left-radius: 4px;
+        }
+
+        .footer {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            background: #252525;
+        }
+
+        input {
+            background: #333;
+            border: none;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            outline: none;
+            flex: 1;
+        }
+
+        button {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover { opacity: 0.8; }
+
+        .status { font-size: 12px; color: #888; margin-bottom: 10px; }
+        #my-id { color: var(--accent); cursor: pointer; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="status">Твой ID (нажми, чтобы скопировать): <b id="my-id">Загрузка...</b></div>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="peer-id" placeholder="Введите ID друга">
+            <button onclick="connect()">Connect</button>
+        </div>
+    </div>
+
+    <div id="chat">
+        <div class="msg friend">Привет! Скопируй свой ID сверху, отправь другу, и когда он подключится — можно чатиться напрямую.</div>
+    </div>
+
+    <div class="footer">
+        <input type="text" id="msg-input" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') send()">
+        <button onclick="send()">➤</button>
+    </div>
+</div>
+
+<script>
+    const peer = new Peer();
+    let conn;
+    const chatBox = document.getElementById('chat');
+    const myIdDisplay = document.getElementById('my-id');
+
+    peer.on('open', id => {
+        myIdDisplay.innerText = id;
+        myIdDisplay.onclick = () => {
+            navigator.clipboard.writeText(id);
+            alert('ID скопирован!');
+        };
+    });
+
+    peer.on('connection', c => {
+        conn = c;
+        setupChat();
+    });
+
+    function connect() {
+        const id = document.getElementById('peer-id').value;
+        if (!id) return;
+        conn = peer.connect(id);
+        setupChat();
+    }
+
+    function setupChat() {
+        conn.on('open', () => {
+            addMessage('Система', 'Соединение установлено!', 'friend');
+        });
+        conn.on('data', data => {
+            addMessage('Друг', data, 'friend');
+        });
+    }
+
+    function send() {
+        const input = document.getElementById('msg-input');
+        const msg = input.value;
+        if (!msg || !conn) return;
+        
+        conn.send(msg);
+        addMessage('Я', msg, 'my');
+        input.value = '';
+    }
+
+    function addMessage(user, text, type) {
+        const div = document.createElement('div');
+        div.className = `msg ${type}`;
+        div.innerText = text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
