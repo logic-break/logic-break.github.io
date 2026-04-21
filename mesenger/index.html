@@ -3,109 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P Private Chat</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <title>Firebase P2P Chat</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        :root {
-            --bg: #121212;
-            --panel: #1e1e1e;
-            --accent: #007aff;
-            --text: #e0e0e0;
-            --my-msg: #0056b3;
-            --friend-msg: #333;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-            height: 90vh;
-            background: var(--panel);
-            display: flex;
-            flex-direction: column;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            overflow: hidden;
-        }
-
-        .header {
-            padding: 20px;
-            background: #252525;
-            border-bottom: 1px solid #333;
-        }
-
-        #chat {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .msg {
-            max-width: 80%;
-            padding: 10px 15px;
-            border-radius: 18px;
-            font-size: 15px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .my {
-            align-self: flex-end;
-            background: var(--my-msg);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .friend {
-            align-self: flex-start;
-            background: var(--friend-msg);
-            border-bottom-left-radius: 4px;
-        }
-
-        .footer {
-            padding: 15px;
-            display: flex;
-            gap: 10px;
-            background: #252525;
-        }
-
-        input {
-            background: #333;
-            border: none;
-            color: white;
-            padding: 12px 15px;
-            border-radius: 10px;
-            outline: none;
-            flex: 1;
-        }
-
-        button {
-            background: var(--accent);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        button:hover { opacity: 0.8; }
-
-        .status { font-size: 12px; color: #888; margin-bottom: 10px; }
+        :root { --bg: #121212; --panel: #1e1e1e; --accent: #007aff; --text: #e0e0e0; --my-msg: #0056b3; --friend-msg: #333; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { width: 100%; max-width: 500px; height: 90vh; background: var(--panel); display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; }
+        .header { padding: 20px; background: #252525; border-bottom: 1px solid #333; }
+        #chat { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 15px; }
+        .my { align-self: flex-end; background: var(--my-msg); }
+        .friend { align-self: flex-start; background: var(--friend-msg); }
+        .system { align-self: center; font-size: 12px; color: #666; }
+        .footer { padding: 15px; display: flex; gap: 10px; background: #252525; }
+        input { background: #333; border: none; color: white; padding: 12px 15px; border-radius: 10px; flex: 1; outline: none; }
+        button { background: var(--accent); border: none; color: white; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
         #my-id { color: var(--accent); cursor: pointer; text-decoration: underline; }
     </style>
 </head>
@@ -113,76 +26,76 @@
 
 <div class="container">
     <div class="header">
-        <div class="status">Твой ID (нажми, чтобы скопировать): <b id="my-id">Загрузка...</b></div>
+        <div style="font-size: 12px; color: #888; margin-bottom: 5px;">Твой ID (нажми): <b id="my-id">...</b></div>
         <div style="display:flex; gap:10px;">
-            <input type="text" id="peer-id" placeholder="Введите ID друга">
-            <button onclick="connect()">Connect</button>
+            <input type="text" id="friend-id" placeholder="ID друга">
+            <button onclick="startChat()">CONNECT</button>
         </div>
     </div>
-
     <div id="chat">
-        <div class="msg friend">Привет! Скопируй свой ID сверху, отправь другу, и когда он подключится — можно чатиться напрямую.</div>
+        <div class="system">Инструкция: создай базу, вставь ссылку в код, введи ID друга и нажми Connect.</div>
     </div>
-
     <div class="footer">
         <input type="text" id="msg-input" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') send()">
-        <button onclick="send()">➤</button>
+        <button onclick="send()">></button>
     </div>
 </div>
 
 <script>
-    const peer = new Peer();
-    let conn;
-    const chatBox = document.getElementById('chat');
+    // ВСТАВЬ СВОЮ ССЫЛКУ НИЖЕ
+    const firebaseConfig = {
+        databaseURL: "https://superduper-c72f0-default-rtdb.firebaseio.com/"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const myId = Math.random().toString(36).substring(2, 6).toUpperCase();
     const myIdDisplay = document.getElementById('my-id');
+    myIdDisplay.innerText = myId;
+    myIdDisplay.onclick = () => {
+        navigator.clipboard.writeText(myId);
+        alert('ID скопирован');
+    };
 
-    peer.on('open', id => {
-        myIdDisplay.innerText = id;
-        myIdDisplay.onclick = () => {
-            navigator.clipboard.writeText(id);
-            alert('ID скопирован!');
-        };
-    });
+    let roomRef = null;
 
-    peer.on('connection', c => {
-        conn = c;
-        setupChat();
-    });
+    function startChat() {
+        const fId = document.getElementById('friend-id').value.toUpperCase().trim();
+        if (!fId) return;
 
-    function connect() {
-        const id = document.getElementById('peer-id').value;
-        if (!id) return;
-        conn = peer.connect(id);
-        setupChat();
-    }
+        const roomId = [myId, fId].sort().join('_');
+        roomRef = db.ref('rooms/' + roomId);
 
-    function setupChat() {
-        conn.on('open', () => {
-            addMessage('Система', 'Соединение установлено!', 'friend');
-        });
-        conn.on('data', data => {
-            addMessage('Друг', data, 'friend');
+        document.getElementById('chat').innerHTML = '<div class="system">Подключено к комнате ' + roomId + '</div>';
+
+        roomRef.limitToLast(30).on('child_added', (snapshot) => {
+            const data = snapshot.val();
+            addMsg(data.sender === myId ? 'my' : 'friend', data.text);
         });
     }
 
     function send() {
         const input = document.getElementById('msg-input');
-        const msg = input.value;
-        if (!msg || !conn) return;
-        
-        conn.send(msg);
-        addMessage('Я', msg, 'my');
+        const text = input.value.trim();
+        if (!text || !roomRef) return;
+
+        roomRef.push({
+            sender: myId,
+            text: text,
+            timestamp: Date.now()
+        });
         input.value = '';
     }
 
-    function addMessage(user, text, type) {
+    function addMsg(type, text) {
+        const chat = document.getElementById('chat');
         const div = document.createElement('div');
-        div.className = `msg ${type}`;
+        div.className = 'msg ' + type;
         div.innerText = text;
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
     }
 </script>
-
 </body>
 </html>
